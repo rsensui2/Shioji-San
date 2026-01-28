@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP&A Bot Project Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0A192F;
+            --secondary-navy: #112240;
+            --accent-gold: #D4AF37;
+            --text-white: #E6F1FF;
+            --text-gray: #8892B0;
+            --bg-light: #F8FAFC;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--primary-navy);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary-navy);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: -40px auto 40px;
+            padding: 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--accent-gold);
+        }
+
+        .card h2 {
+            margin: 0 0 12px 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--text-gray);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            margin: 40px 0 20px;
+            font-size: 18px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-gray);
+            font-size: 12px;
+        }
+
+        .icon {
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-content">
+            <div class="logo-box">🤖</div>
+            <h1>FP&A Bot Project Portal</h1>
+            <p>経企AIアシスタント導入プロジェクト 資料集</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="section-title">Prototypes & Mocks</div>
+        <div class="grid">
+            <a href="Docs/fpa_bot_mock.html" class="card">
+                <h2><span class="icon">📱</span> Mobile App Mock</h2>
+                <p>スマートフォンでの操作イメージを確認できるインタラクティブなMockです。実際のチャットフローを体験できます。</p>
+            </a>
+        </div>
+
+        <div class="section-title">Project Documents</div>
+        <div class="grid">
+            <a href="Docs/01_エグゼクティブサマリー.md" class="card">
+                <h2><span class="icon">📄</span> 01. エグゼクティブサマリー</h2>
+                <p>プロジェクトの背景、目的、期待される成果の全体像をまとめています。</p>
+            </a>
+            <a href="Docs/02_サービス概要と機能詳細.md" class="card">
+                <h2><span class="icon">⚙️</span> 02. サービス概要と機能</h2>
+                <p>主要機能（プロアクティブ応答、エスカレーション等）の詳細解説資料です。</p>
+            </a>
+            <a href="Docs/03_技術構成とLLM活用策.md" class="card">
+                <h2><span class="icon">💻</span> 03. 技術構成とLLM活用策</h2>
+                <p>RAG構成やセキュリティ、開発スタックに関する技術的な説明資料です。</p>
+            </a>
+            <a href="Docs/04_費用対効果とCFO向け説明資料.md" class="card">
+                <h2><span class="icon">📊</span> 04. 費用対効果とROI</h2>
+                <p>工数削減予測や投資回収期間など、経営層向けの定量的な分析資料です。</p>
+            </a>
+            <a href="Docs/05_ロードマップと今後の展望.md" class="card">
+                <h2><span class="icon">🚀</span> 05. ロードマップ</h2>
+                <p>PoCから全社導入までのスケジュールと将来の拡張プランです。</p>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 FP&A Bot Implementation Project Team
+    </footer>
+
+</body>
+
+</html>

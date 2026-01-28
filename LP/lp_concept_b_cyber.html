@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP&A Bot - The Future of Financial Intelligence</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Roboto+Mono:wght@400;500&display=swap');
+
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: rgba(255, 255, 255, 0.05);
+            --primary: #66FCF1;
+            /* Cyan */
+            --secondary: #45A29E;
+            --accent: #C400FF;
+            /* Neon Purple */
+            --text-main: #FFFFFF;
+            --text-dim: #C5C6C7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Abstract Background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image:
+                linear-gradient(rgba(102, 252, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 252, 241, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glow-orb {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(196, 0, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            top: -200px;
+            right: -100px;
+            z-index: -1;
+            filter: blur(50px);
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Elements */
+        h1,
+        h2,
+        h3 {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            background: rgba(102, 252, 241, 0.05);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 252, 241, 0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.5);
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-family: 'Roboto Mono', monospace;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(102, 252, 241, 0.5);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 200px 0 100px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, #94A3B8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+            -webkit-text-fill-color: var(--primary);
+            text-shadow: 0 0 20px rgba(102, 252, 241, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            margin-bottom: 3rem;
+            border-left: 2px solid var(--accent);
+            padding-left: 1.5rem;
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .hero-visual img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 0 50px rgba(196, 0, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-visual::after {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            border: 1px solid var(--primary);
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        /* Tech Specs */
+        .specs {
+            padding: 100px 0;
+        }
+
+        .specs h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .glass-card {
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-radius: 16px;
+            transition: 0.3s;
+        }
+
+        .glass-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-10px);
+            background: rgba(102, 252, 241, 0.05);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .glass-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .glass-card p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+
+        /* Interactive Demo UI */
+        .interactive {
+            padding: 100px 0;
+            background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.5), transparent);
+        }
+
+        .terminal-window {
+            background: #0F172A;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1E293B;
+            font-family: 'Roboto Mono', monospace;
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: #1E293B;
+            padding: 0.75rem 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #334155;
+        }
+
+        .dot.red {
+            background: #EF4444;
+        }
+
+        .dot.yellow {
+            background: #F59E0B;
+        }
+
+        .dot.green {
+            background: #10B981;
+        }
+
+        .terminal-body {
+            padding: 2rem;
+            color: #E2E8F0;
+        }
+
+        .command {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .command::before {
+            content: '$ ';
+            opacity: 0.5;
+        }
+
+        .output {
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: var(--primary);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+    <div class="glow-orb"></div>
+
+    <header>
+        <div class="container">
+            <div class="logo">&lt;FP&A_Bot /&gt;</div>
+            <a href="#" class="btn" style="padding: 0.5rem 1.5rem; font-size: 0.8rem;">Initialize System</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-text">
+                <h1>Next-Gen<br>Financial<br><span>Intelligence</span></h1>
+                <p>Activate the power of LLM & RAG architecture. Transform your static financial data into a dynamic,
+                    queryable knowledge base.</p>
+                <a href="#" class="btn">Deploy Agent</a>
+            </div>
+            <div class="hero-visual">
+                <img src="images/hero_b.png" alt="AI Financial Network Visualization">
+            </div>
+        </div>
+    </section>
+
+    <section class="specs">
+        <div class="container">
+            <h2>System Capabilities</h2>
+            <div class="grid-cards">
+                <div class="glass-card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Instant Processing</h3>
+                    <p>Powered by vector search algorithms to retrieve historical data in milliseconds. No latency in
+                        decision making.</p>
+                </div>
+                <div class="glass-card">
+                    <div class="card-icon">🧠</div>
+                    <h3>Context Aware</h3>
+                    <p>Understands the nuance of "Corporate Accounting Principles" vs "Tax Law". Adapts responses based
+                        on context.</p>
+                </div>
+                <div class="glass-card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Enterprise Grade</h3>
+                    <p>Private cloud deployment options. Zero data leakage. Compliant with strict governance protocols.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="interactive">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h2>Live Interaction Protocol</h2>
+                <p style="color: var(--text-dim);">Simulation of query execution</p>
+            </div>
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <div class="terminal-body">
+                    <div class="command">query --input "Q3の販管費の増加要因を分析して"</div>
+                    <div class="output">
+                        > Accessing Database... [OK]<br>
+                        > Analyzing Q3 Transaction Logs... [DONE]<br>
+                        > Comparing with Q2 Data... [DONE]<br>
+                        <br>
+                        <span style="color: #fff;">Result:</span><br>
+                        Q3の販管費は対前期比で+15%増加しています。<br>
+                        主な要因は以下の通りです：<br>
+                        1. 9月実施のTVCM放映に伴う広告宣伝費 (+1,200万円)<br>
+                        2. 新規採用に伴うエージェント手数料 (+300万円)<br>
+                        <br>
+                        これらは期初の予算計画内での推移です。
+                    </div>
+                    <div class="command">_ <span class="cursor"></span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>SYSTEM STATUS: OPERATIONAL</p>
+            <p style="margin-top: 1rem;">&copy; 2026 FP&A Bot AI Project. All systems go.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

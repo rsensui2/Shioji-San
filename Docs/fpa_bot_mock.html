@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP&A Bot Mobile Mock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0A192F;
+            --secondary-navy: #112240;
+            --accent-gold: #D4AF37;
+            --text-white: #E6F1FF;
+            --text-gray: #8892B0;
+            --bg-light: #F8FAFC;
+            --chat-user: #007AFF;
+            --chat-ai: #FFFFFF;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--primary-navy);
+            overflow-x: hidden;
+        }
+
+        /* Device Frame Simulation */
+        .device-container {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .device-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-light);
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 44px;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        /* Header */
+        header {
+            padding: 16px 20px;
+            background: var(--primary-navy);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-circle {
+            width: 36px;
+            height: 36px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .logo-circle img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+        .header-info h1 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header-info span {
+            font-size: 10px;
+            color: var(--accent-gold);
+            font-weight: 600;
+            display: block;
+        }
+
+        /* Chat Area */
+        .chat-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: #fdfdfd;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: #fff;
+            color: var(--primary-navy);
+            border: 1px solid #eef2f7;
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--primary-navy);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message .time {
+            font-size: 10px;
+            margin-top: 4px;
+            opacity: 0.6;
+            display: block;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: #fff;
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-gray);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-6px);
+            }
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 16px 20px 32px;
+            background: #fff;
+            border-top: 1px solid #eef2f7;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-box {
+            flex: 1;
+            background: #f0f2f5;
+            border-radius: 24px;
+            padding: 10px 16px;
+            font-size: 14px;
+            border: none;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-navy);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .send-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Nav Tabs */
+        .nav-tabs {
+            height: 64px;
+            background: #fff;
+            border-top: 1px solid #eef2f7;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 20px;
+        }
+
+        .tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-gray);
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            color: var(--primary-navy);
+        }
+
+        .tab-icon {
+            font-size: 20px;
+        }
+
+        /* Demo Buttons Overlay */
+        .demo-controls {
+            margin-right: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 220px;
+        }
+
+        .demo-btn {
+            padding: 12px 16px;
+            background: #fff;
+            border: 2px solid var(--primary-navy);
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .demo-btn:hover {
+            background: var(--primary-navy);
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        /* Alert Display for Escalation */
+        .escalation-badge {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: #FFFBEB;
+            border: 1px solid #FCD34D;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #92400E;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .badge-header {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Desktop specific helper */
+        .helper-text {
+            margin-left: 40px;
+            width: 280px;
+            background: #fff;
+            padding: 24px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            box-shadow: var(--shadow-md);
+        }
+
+        .helper-text h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: var(--primary-navy);
+            border-bottom: 2px solid var(--accent-gold);
+            padding-bottom: 4px;
+            display: inline-block;
+        }
+
+        .helper-text ul {
+            padding-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .helper-text li {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 1000px) {
+            body {
+                flex-direction: column;
+                padding: 40px 20px;
+                height: auto;
+            }
+
+            .demo-controls,
+            .helper-text {
+                width: 375px;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="demo-controls">
+        <h2 style="font-size: 16px; margin-bottom: 8px;">Demo Scenarios</h2>
+        <button class="demo-btn" onclick="runScenario('pc_cost')">💻 1. 勘定科目の質問</button>
+        <button class="demo-btn" onclick="runScenario('month_drift')">📅 2. 月ズレの相談</button>
+        <button class="demo-btn" onclick="runScenario('escalate')">⚠️ 3. 複雑案件(エスカレーション)</button>
+        <button class="demo-btn" style="border-color: #ccc; color: #666;" onclick="clearChat()">🔄 リセット</button>
+    </div>
+
+    <div class="device-container">
+        <div class="device-screen">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div style="display: flex; gap: 4px;">
+                    <span>📶</span>
+                    <span>🔋</span>
+                </div>
+            </div>
+
+            <!-- Header -->
+            <header>
+                <div class="header-info">
+                    <div class="logo-circle">
+                        <!-- Use an inline SVG logo since external asset paths can be tricky in some viewers -->
+                        <svg width="30" height="30" viewBox="0 0 100 100" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="48" fill="white" />
+                            <path
+                                d="M30 70V30H55C65 30 70 35 70 42.5C70 50 65 55 55 55H42V70H30ZM42 45H52C56 45 58 43 58 40C58 37 56 35 52 35H42V45Z"
+                                fill="#0A192F" />
+                            <path d="M65 65L80 80" stroke="#D4AF37" stroke-width="8" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1>FP&A Bot</h1>
+                        <span>Business Planning Assistant</span>
+                    </div>
+                </div>
+                <div style="font-size: 20px;">⚙️</div>
+            </header>
+
+            <!-- Chat Area -->
+            <div class="chat-container" id="chatContainer">
+                <div class="message ai">
+                    お疲れ様です。FP&A Botです。
+                    費用計上や勘定科目に関するご質問をどうぞ。
+                    <span class="time">9:41 AM</span>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <input type="text" class="input-box" id="userInput" placeholder="メッセージを入力...">
+                <button class="send-btn" onclick="handleInput()">
+                    <span style="transform: rotate(-45deg); display: block;">✈️</span>
+                </button>
+            </div>
+
+            <!-- Nav Tabs -->
+            <div class="nav-tabs">
+                <div class="tab active">
+                    <span class="tab-icon">💬</span>
+                    <span>Chat</span>
+                </div>
+                <div class="tab">
+                    <span class="tab-icon">📋</span>
+                    <span>History</span>
+                </div>
+                <div class="tab">
+                    <span class="tab-icon">👤</span>
+                    <span>Account</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="helper-text">
+        <h3>✨ Mockの概要</h3>
+        <ul>
+            <li><strong>Premium Design:</strong> 経営企画にふさわしい信頼感のあるネイビーとゴールドを採用。</li>
+            <li><strong>RAG Capability:</strong> 社内規程や過去事例を引用した回答プロセスを再現。</li>
+            <li><strong>Auto Escalation:</strong> AIが判断に迷う際、担当者へ自動的に繋ぐフローを表示。</li>
+        </ul>
+        <p style="font-size: 12px; color: var(--text-gray);">
+            左側のシナリオボタンを押して、実際のチャットフローを体験してください。
+        </p>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const userInput = document.getElementById('userInput');
+
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function addMessage(text, side, extraHtml = '') {
+            const now = new Date();
+            const timeStr = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')} AM`;
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${side}`;
+            msgDiv.innerHTML = `
+                ${text}
+                ${extraHtml}
+                <span class="time">${timeStr}</span>
+            `;
+            chatContainer.appendChild(msgDiv);
+            scrollToBottom();
+        }
+
+        async function showThinking(duration = 1500) {
+            typingIndicator.style.display = 'flex';
+            scrollToBottom();
+            await new Promise(resolve => setTimeout(resolve, duration));
+            typingIndicator.style.display = 'none';
+        }
+
+        async function handleInput() {
+            const val = userInput.value.trim();
+            if (!val) return;
+
+            addMessage(val, 'user');
+            userInput.value = '';
+
+            await showThinking();
+            addMessage('申し訳ございません。現在デモモードのため、左側のボタンからシナリオを実行してください。', 'ai');
+        }
+
+        async function runScenario(type) {
+            clearChat();
+
+            if (type === 'pc_cost') {
+                addMessage('PCを購入したのですが、勘定科目は何になりますか？金額は12万円です。', 'user');
+                await showThinking(2000);
+                addMessage(
+                    '10万円以上のPC購入ですね。過去の仕訳事例に基づき回答します。<br><br>' +
+                    '<strong>推奨科目: 「備品費」または「工具器具備品」</strong><br>' +
+                    '・10万円以上の場合は固定資産として登録が必要です。<br>' +
+                    '・管理部の固定資産台帳への登録フローも開始しますか？',
+                    'ai'
+                );
+            }
+            else if (type === 'month_drift') {
+                addMessage('12月に発注した広告費用（100万円）ですが、納品が1月になりました。どちらの月に計上すべきですか？', 'user');
+                await showThinking(2200);
+                addMessage(
+                    '会計規程に基づき回答します。<br><br>' +
+                    '原則、<strong>「検収日（納品日）」が属する月</strong>に発生主義で計上します。したがって、<strong>1月計上</strong>となります。<br><br>' +
+                    'ただし、予算が12月に付いている場合、予算未消化の理由報告が必要になる場合があります。',
+                    'ai'
+                );
+            }
+            else if (type === 'escalate') {
+                addMessage('海外子会社への技術支援に伴う源泉徴収税の扱いの特例について教えてください。', 'user');
+                await showThinking(2500);
+                addMessage(
+                    'ご質問ありがとうございます。この件については、税制度の個別判断が必要となる複雑なケースと判断しました。<br><br>' +
+                    '<strong>AI暫定回答:</strong> 通常は租税条約の届出が必要ですが、相手国により判断が異なります。',
+                    'ai',
+                    `<div class="escalation-badge">
+                        <div class="badge-header">⚠️ 低信頼度判定 (42%)</div>
+                        <div>経営企画（国際税務担当）へ自動エスカレーションしました。担当者からの返信をお待ちください。</div>
+                    </div>`
+                );
+            }
+        }
+
+        function clearChat() {
+            chatContainer.innerHTML = `
+                <div class="message ai">
+                    お疲れ様です。FP&A Botです。
+                    費用計上や勘定科目に関するご質問をどうぞ。
+                    <span class="time">9:41 AM</span>
+                </div>
+            `;
+        }
+
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleInput();
+        });
+    </script>
+</body>
+
+</html>
